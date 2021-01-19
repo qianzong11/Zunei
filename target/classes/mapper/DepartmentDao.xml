@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kgc.dao.DepartmentDao">
+
+    <resultMap type="cn.kgc.entity.Department" id="DepartmentMap">
+        <result property="depid" column="depId" jdbcType="INTEGER"/>
+        <result property="depname" column="depName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DepartmentMap">
+        select
+          depId, depName
+        from text.department
+        where depId = #{depid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DepartmentMap">
+        select
+          depId, depName
+        from text.department
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DepartmentMap">
+        select
+        depId, depName
+        from text.department
+        <where>
+            <if test="depid != null">
+                and depId = #{depid}
+            </if>
+            <if test="depname != null and depname != ''">
+                and depName = #{depname}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="depid" useGeneratedKeys="true">
+        insert into text.department(depName)
+        values (#{depname})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="depid" useGeneratedKeys="true">
+        insert into text.department(depName)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.depname})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="depid" useGeneratedKeys="true">
+        insert into text.department(depName)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.depname})
+        </foreach>
+        on duplicate key update
+        depName = values(depName)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update text.department
+        <set>
+            <if test="depname != null and depname != ''">
+                depName = #{depname},
+            </if>
+        </set>
+        where depId = #{depid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from text.department where depId = #{depid}
+    </delete>
+
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kgc.dao.EmployeeDao">
+
+    <resultMap type="cn.kgc.entity.Employee" id="EmployeeMap">
+        <result property="empid" column="empId" jdbcType="INTEGER"/>
+        <result property="empname" column="empName" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="addtime" column="addTime" jdbcType="OTHER"/>
+        <result property="wage" column="wage" jdbcType="OTHER"/>
+        <result property="depid" column="depId" jdbcType="INTEGER"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    
+    <resultMap id="empList" type="employee">
+        <result property="empid" column="empId" jdbcType="INTEGER"/>
+        <result property="empname" column="empName" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="addtime" column="addTime" jdbcType="OTHER"/>
+        <result property="wage" column="wage" jdbcType="OTHER"/>
+        <result property="depid" column="depId" jdbcType="INTEGER"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <association property="department" select="cn.kgc.dao.DepartmentDao.queryById" column="depId"></association>
+    </resultMap>
+    
+<!--无条件查询所有-->
+    <select id="getAllEmp" resultMap="empList">
+        select * from employee
+    </select>
+
+
+
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeMap">
+        select
+          empId, empName, age, sex, addTime, wage, depId, state
+        from text.employee
+        where empId = #{empid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EmployeeMap">
+        select
+          empId, empName, age, sex, addTime, wage, depId, state
+        from text.employee
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="EmployeeMap">
+        select
+        empId, empName, age, sex, addTime, wage, depId, state
+        from text.employee
+        <where>
+            <if test="empid != null">
+                and empId = #{empid}
+            </if>
+            <if test="empname != null and empname != ''">
+                and empName = #{empname}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="addtime != null">
+                and addTime = #{addtime}
+            </if>
+            <if test="wage != null">
+                and wage = #{wage}
+            </if>
+            <if test="depid != null">
+                and depId = #{depid}
+            </if>
+            <if test="state != null">
+                and state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="empid" useGeneratedKeys="true">
+        insert into text.employee(empName, age, sex, addTime, wage, depId, state)
+        values (#{empname}, #{age}, #{sex}, #{addtime}, #{wage}, #{depid}, #{state})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="empid" useGeneratedKeys="true">
+        insert into text.employee(empName, age, sex, addTime, wage, depId, state)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.empname}, #{entity.age}, #{entity.sex}, #{entity.addtime}, #{entity.wage}, #{entity.depid},
+            #{entity.state})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="empid" useGeneratedKeys="true">
+        insert into text.employee(empName, age, sex, addTime, wage, depId, state)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.empname}, #{entity.age}, #{entity.sex}, #{entity.addtime}, #{entity.wage}, #{entity.depid},
+            #{entity.state})
+        </foreach>
+        on duplicate key update
+        empName = values(empName) , age = values(age) , sex = values(sex) , addTime = values(addTime) , wage =
+        values(wage) , depId = values(depId) , state = values(state)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update text.employee
+        <set>
+            <if test="empname != null and empname != ''">
+                empName = #{empname},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="addtime != null">
+                addTime = #{addtime},
+            </if>
+            <if test="wage != null">
+                wage = #{wage},
+            </if>
+            <if test="depid != null">
+                depId = #{depid},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+        </set>
+        where empId = #{empid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from text.employee where empId = #{empid}
+    </delete>
+
+</mapper>

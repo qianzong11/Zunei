@@ -1,0 +1,26 @@
+{
+  "name" : "Department",
+  "preName" : "",
+  "comment" : null,
+  "templateGroupName" : "Default",
+  "fullColumn" : [ {
+    "name" : "depid",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  }, {
+    "name" : "depname",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  } ],
+  "pkColumn" : null,
+  "otherColumn" : null,
+  "savePackageName" : "cn.kgc",
+  "savePath" : "./src/main/java/cn/kgc",
+  "saveModelName" : "yuangong"
+}
